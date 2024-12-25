@@ -13,5 +13,3 @@ end
 # Load libraries
 require_relative 'issue_wiki_journal/wiki_changeset'
 
-# Load hooks
-Dir[IssueWikiJournal.root.join('app/hooks/**/*_hooks.rb')].each {|f| require f }
