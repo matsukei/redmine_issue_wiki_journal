@@ -62,11 +62,11 @@ class IssueWikiJournal::WikiControllerTest < ActionController::TestCase
   test "translate message of journal" do
     journals = Issue.find(1).journals
 
-    [:en, :ja].each_with_index do |locale, i|
+    [:en, :ja].each.with_index(1) do |locale, i|
       ::I18n.locale = locale
-      update_wiki_page with: 'refs #1 message', as_version: i
+      update_wiki_page with: 'refs #1 message', message: "h1. New Page\n\n Version #{i}"
       assert_equal journals.last.notes,
-                    changeset_message('New_Page', 'refs #1 message', version: i + 1),
+                    changeset_message('New_Page', 'refs #1 message', version: i),
                     "Journal message test with #{locale} locale"
     end
   end
@@ -171,15 +171,18 @@ class IssueWikiJournal::WikiControllerTest < ActionController::TestCase
   end
 
   def update_wiki_page(args = {})
-    comment, version, project = args.values_at(:with, :as_version, :in_project)
+    comment, version, project, message = args.values_at(:with, :as_version, :in_project, :message)
+    title = 'New Page'
+    pages = @project.wiki.find_or_new_page(title)
+    version = pages.try(:content) ? pages.content.version : 1 if version.blank?
 
     put :update, :params => {
       :project_id =>  project || @project.id,
-      :id => 'New page',
+      :id => title,
       :content => {
         :comments => comment,
-        :text => "h1. New Page\n\n Version #{version || 0}",
-        :version => version || 0
+        :text => message || "h1. New Page\n\n Version #{version}",
+        :version => version
       }
     }
   end
