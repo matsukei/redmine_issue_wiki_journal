@@ -7,8 +7,9 @@ Redmine::Plugin.register :redmine_issue_wiki_journal do
   version '0.9.0'
   url 'https://github.com/hidakatsuya/redmine_issue_wiki_journal'
   author_url 'https://github.com/hidakatsuya'
-  # Requires Redmine 2.3.x or higher
-  requires_redmine '2.3'
+  # Requires Redmine 5.x.x or higher
+  requires_redmine version_or_higher: '5.0.0'
 end
 
-require 'issue_wiki_journal'
+require File.expand_path('../lib/issue_wiki_journal/application_hooks', __FILE__)
+require File.expand_path('../lib/issue_wiki_journal/wiki_controller_hooks', __FILE__)

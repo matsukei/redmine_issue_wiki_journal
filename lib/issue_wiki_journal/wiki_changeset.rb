@@ -54,7 +54,7 @@ module IssueWikiJournal
     # same as Changeset#find_referenced_issue_by_id
     def find_referenced_issue_by_id(id)
       return nil if id.blank?
-      issue = Issue.find_by_id(id.to_i, :include => :project)
+      issue = Issue.find_by(id: id.to_i)
       if Setting.commit_cross_project_ref?
         # all issues can be referenced/fixed
       elsif issue
@@ -74,7 +74,7 @@ module IssueWikiJournal
 
         # less than 2.4
         if Redmine::VERSION.to_s < '2.4'
-          status = IssueStatus.find_by_id(Setting.commit_fix_status_id.to_i)
+          status = IssueStatus.find_by(id: Setting.commit_fix_status_id.to_i)
           if status.nil?
             logger.warn("No status matches commit_fix_status_id setting (#{Setting.commit_fix_status_id})") if logger
             return issue
@@ -123,7 +123,7 @@ module IssueWikiJournal
 
     def log_time_activity
       if Setting.commit_logtime_activity_id.to_i > 0
-        TimeEntryActivity.find_by_id(Setting.commit_logtime_activity_id.to_i)
+        TimeEntryActivity.find_by(id: Setting.commit_logtime_activity_id.to_i)
       end
     end
 
